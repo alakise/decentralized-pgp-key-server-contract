@@ -1,409 +1,195 @@
-# Payment Manager
+# Advanced PGP Key Server
 
-A Solidity smart contract for managing payments with security features and ownership control, developed using Hardhat.
+A decentralized PGP key server with trust scoring and attestation mechanisms built on Ethereum.
 
-## Contract Overview
+## Table of Contents
 
-The `PaymentManager` smart contract is designed to manage payments in various cryptocurrencies. It includes features to:
-- Accept payments in specified cryptocurrencies.
-- Emit events for each payment for server-side verification.
-- Allow the owner to change the payment address and accepted cryptocurrencies.
-- Enable pausing and unpausing of the payment function.
-- Withdraw stuck funds by the owner.
+- [Overview](#overview)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Deployment](#deployment)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Deployed Contract
+## Overview
 
-The `PaymentManager` contract has been already deployed on the Holesky network to the following address:
+The Advanced PGP Key Server is a smart contract-based solution for managing PGP keys on the Ethereum blockchain. It provides a decentralized platform for key registration, attestation, and trust scoring, enhancing the security and reliability of PGP key management.
 
-```plaintext
-0xaDD20dfD083bDD5D08FE83a05553ad22687549F4
-```
+## Features
+
+- PGP key registration with staking mechanism
+- Key attestation system
+- Trust scoring based on attestations and account activity
+- Key revocation functionality
+- Stake withdrawal after key revocation
+- Trust decay mechanism to encourage active participation
+- Admin functions for parameter adjustment
 
 ## Prerequisites
-Main preqrequisities are as listed. For all dependencies and version information please refer to package.json
-- Node.js and npm: [Download and install Node.js](https://nodejs.org/)
-- Infura account: [Sign up for Infura](https://infura.io/) and create a new project to get your Infura project ID.
-- Etherscan account: [Sign up for Etherscan](https://etherscan.io/) and obtain an API key.
-- Solidity ^0.8.20
-- OpenZeppelin Contracts
 
-## Project Setup
+Before you begin, ensure you have met the following requirements:
+
+- Node.js (v14.0.0 or later)
+- npm (v6.0.0 or later)
+- An Ethereum wallet with test ETH (for deploying to testnets)
+- Infura account (for deploying to public networks)
+- Etherscan API key (for contract verification)
+
+## Installation
 
 1. Clone the repository:
-
-   ```bash
-   git clone <repository_url>
-   cd payment-manager
+   ```
+   git clone https://github.com/your-username/advanced-pgp-key-server.git
+   cd advanced-pgp-key-server
    ```
 
-2. Install dependencies:
-
-   ```bash
+2. Install the dependencies:
+   ```
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add your Infura project ID, mnemonic, and Etherscan API key:
-
-   ```plaintext
-   MNEMONIC="your twelve word mnemonic"
+3. Create a `.env` file in the root directory and add the following environment variables:
+   ```
+   MNEMONIC="your mnemonic phrase"
    INFURA_PROJECT_ID="your infura project id"
    ETHERSCAN_API_KEY="your etherscan api key"
    ```
 
-## Project Structure
+## Usage
 
-- `contracts/`: Contains the Solidity smart contract.
-- `scripts/`: Contains the deployment script.
-- `test/`: Contains the test scripts.
-- `hardhat.config.js`: Hardhat configuration file.
-- `package.json`: Project dependencies and scripts.
+To interact with the contract, you can use Hardhat tasks or write your own scripts. Here are some example commands:
 
-## Scripts
+- Compile the contracts:
+  ```
+  npm run compile
+  ```
 
-### Compile Contracts
+- Run the tests:
+  ```
+  npm run test
+  ```
 
-To compile the Solidity contracts using Hardhat:
+- Deploy to local Hardhat network:
+  ```
+  npm run deploy
+  ```
 
-```bash
-npm run compile
+## Deployment
+
+The contract can be deployed to various Ethereum networks. Use the following commands for deployment:
+
+- Deploy to Sepolia testnet:
+  ```
+  npm run deploy:sepolia
+  ```
+
+- Deploy to Holesky testnet:
+  ```
+  npm run deploy:holesky
+  ```
+
+- Deploy to Ethereum mainnet:
+  ```
+  npm run deploy:mainnet
+  ```
+
+Note: Make sure you have sufficient ETH in your wallet to cover the deployment gas costs.
+
+### Deployed Contract
+
+The contract has been deployed to the Holesky testnet at the following address:
+
+```
+0x431F968abe3Bf65b5Ac6998513A89E9D5c80CDD1
 ```
 
-### Run Tests
+## Testing
 
-To run the tests using Hardhat:
+To run the test suite, execute:
 
-```bash
+```
 npm run test
 ```
 
-### Deploy Contracts
+Current tests:
+```
+  AdvancedPGPKeyServer
+    Deployment
+      ✔ Should set the right owner
+      ✔ Should initialize with correct default values
+    Key Registration
+      ✔ Should allow a user to register a key with sufficient stake
+    Key Registration
+      ✔ Should allow a user to register a key with sufficient stake
+      ✔ Should not allow a user to register a key with insufficient stake
+      ✔ Should not allow a user to register multiple keys
+    Key Attestation
+      ✔ Should allow a user to attest another user's key
+      ✔ Should not allow a user to attest their own key
+      ✔ Should not allow attestation of an unregistered key
+      ✔ Should not allow attestation within the cooldown period
+    Attestation Revocation
+      ✔ Should allow a user to revoke their attestation
+      ✔ Should not allow revocation of non-existent attestation
+      ✔ Should not allow revocation of already revoked attestation
+    Key Revocation
+      ✔ Should allow a user to revoke their own key
+      ✔ Should not allow revocation of an unregistered key
+    Stake Withdrawal
+      ✔ Should allow withdrawal of stake after key revocation
+      ✔ Should not allow withdrawal of stake without key revocation
+      ✔ Should not allow withdrawal of stake twice
+    Trust Score and Metrics
+      ✔ Should update trust score after attestation
+      ✔ Should decrease trust score after attestation revocation
+      ✔ Should return correct trust metrics
+    Admin Functions
+      ✔ Should allow owner to update minimum stake
+      ✔ Should not allow non-owner to update minimum stake
+      ✔ Should allow owner to update trust decay parameters
+      ✔ Should not allow setting trust decay percentage above 100
+      ✔ Should allow owner to withdraw funds
+      ✔ Should allow owner to pause and unpause the contract
+      ✔ Should not allow operations when paused
+    Potential Attack Scenarios
+      ✔ Should prevent Sybil attacks by requiring minimum stake
+      ✔ Should limit the impact of malicious attestations (51ms)
+      ✔ Should prevent attestation spamming
+      ✔ Should handle potential reentrancy attacks during stake withdrawal
+      ✔ Should prevent manipulation of trust decay parameters
+    Edge Cases
+      ✔ Should handle registration with exact minimum stake
+      ✔ Should handle registration with more than minimum stake
+      ✔ Should handle trust score calculation for a key with no attestations
+      ✔ Should handle trust score calculation after long periods of inactivity
+      ✔ Should handle the case when all attestations for a key are revoked
+  38 passing (2s)
 
-To deploy the contract to the local Hardhat network:
-
-```bash
-npm run deploy
 ```
 
-To deploy the contract to the Sepolia test network:
+This will run all the tests defined in the `test` directory, covering various scenarios and edge cases for the Advanced PGP Key Server contract.
 
-```bash
-npm run deploy:sepolia
-```
 
-To deploy the contract to the Holesky test network:
+## Contributing
 
-```bash
-npm run deploy:holesky
-```
+Contributions to the Advanced PGP Key Server project are welcome. Please follow these steps to contribute:
 
-To deploy the contract to the Ethereum mainnet:
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/your-feature-name`)
+3. Make your changes
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin feature/your-feature-name`)
+6. Create a new Pull Request
 
-```bash
-npm run deploy:mainnet
-```
-
-### Verify Contracts
-
-To verify the contract on Etherscan for the Sepolia test network:
-
-```bash
-npm run verify:ropsten <deployed_contract_address> <constructor_arguments>
-```
-
-To verify the contract on Etherscan for the Holesky test network:
-
-```bash
-npm run verify:rinkeby <deployed_contract_address> <constructor_arguments>
-```
-
-To verify the contract on Etherscan for the Ethereum mainnet:
-
-```bash
-npm run verify:mainnet <deployed_contract_address> <constructor_arguments>
-```
-
-## Deployment Script
-
-Please refer to (`scripts/deploy.js`):
-
-## Test Script
-
-Please refer to (`test/PaymentManager.test.mjs`):
-
-## Contract Details
-
-### Imports
-
-```solidity
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-```
-
-### Contract Definition
-
-```solidity
-contract PaymentManager is ReentrancyGuard, Ownable, Pausable {
-    // Contract code
-}
-```
-
-### State Variables
-
-- `address public paymentAddress`: Address to receive payments.
-- `mapping(address => bool) public acceptedCryptocurrencies`: Mapping of accepted cryptocurrencies.
-
-### Events
-
-- `event PaymentReceived(address indexed donor, address indexed cryptocurrency, uint256 amount, string uniqueIdentifier)`: Emitted when a payment is received.
-- `event CryptocurrencyStatusChanged(address indexed cryptocurrency, bool status)`: Emitted when the status of a cryptocurrency is changed.
-
-### Constructor
-
-Initializes the contract with the payment address and accepted cryptocurrencies.
-
-```solidity
-constructor(address _paymentAddress, address[] memory _acceptedCryptocurrencies) {
-    require(_paymentAddress != address(0), "Payment address cannot be zero address");
-    paymentAddress = _paymentAddress;
-    for (uint i = 0; i < _acceptedCryptocurrencies.length; i++) {
-        acceptedCryptocurrencies[_acceptedCryptocurrencies[i]] = true;
-        emit CryptocurrencyStatusChanged(_acceptedCryptocurrencies[i], true);
-    }
-}
-```
-
-### Functions
-
-#### `changePaymentAddress`
-
-Changes the payment address. Only the owner can call this function.
-
-```solidity
-function changePaymentAddress(address _newAddress) external onlyOwner {
-    require(_newAddress != address(0), "New address cannot be zero address");
-    paymentAddress = _newAddress;
-}
-```
-
-#### `toggleAcceptedCryptocurrency`
-
-Toggles the acceptance status of a cryptocurrency. Only the owner can call this function.
-
-```solidity
-function toggleAcceptedCryptocurrency(address _cryptocurrency, bool _status) external onlyOwner {
-    acceptedCryptocurrencies[_cryptocurrency] = _status;
-    emit CryptocurrencyStatusChanged(_cryptocurrency, _status);
-}
-```
-
-#### `pay`
-
-Allows users to pay using specified cryptocurrencies. Emits a `PaymentReceived` event.
-
-```solidity
-function pay(address _cryptocurrency, string memory uniqueIdentifier) external payable whenNotPaused nonReentrant {
-    require(acceptedCryptocurrencies[_cryptocurrency], "Cryptocurrency not accepted");
-    require(msg.value > 0, "Payment must be greater than zero");
-
-    emit PaymentReceived(msg.sender, _cryptocurrency, msg.value, uniqueIdentifier);
-
-    (bool success, ) = paymentAddress.call{value: msg.value}("");
-    require(success, "Transfer failed");
-}
-```
-
-#### `pause`
-
-Pauses the payment function. Only the owner can call this function.
-
-```solidity
-function pause() external onlyOwner {
-    _pause();
-}
-```
-
-#### `unpause`
-
-Unpauses the payment function. Only the owner can call this function.
-
-```solidity
-function unpause() external onlyOwner {
-    _unpause();
-}
-```
-
-#### `withdraw`
-
-Allows the owner to withdraw stuck funds from the contract. Only the owner can call this function.
-
-```solidity
-function withdraw() external onlyOwner nonReentrant {
-    uint256 balance = address(this).balance;
-    require(balance > 0, "No funds to withdraw");
-    (bool success, ) = owner().call{value: balance}("");
-    require(success, "Withdraw failed");
-}
-```
-
-#### Fallback Function
-
-Receives ETH sent directly to the contract.
-
-```solidity
-receive() external payable {}
-```
-
-## Usage
-
-### Deployment
-
-Deploy the contract with the initial payment address and accepted cryptocurrencies.
-
-```solidity
-constructor(address _paymentAddress, address[] memory _acceptedCryptocurrencies)
-```
-
-### Changing Payment Address
-
-Only the owner can change the payment address.
-
-```solidity
-function changePaymentAddress(address _newAddress) external onlyOwner
-```
-
-### Toggling Accepted Cryptocurrencies
-
-Only the owner can toggle the acceptance status of a cryptocurrency.
-
-```solidity
-function toggleAcceptedCryptocurrency(address _cryptocurrency, bool _status) external onlyOwner
-```
-
-### Payment
-
-Users can pay using the specified cryptocurrencies.
-
-```solidity
-function pay(address _cryptocurrency, string memory uniqueIdentifier) external payable whenNotPaused nonReentrant
-```
-
-### Pausing and Unpausing
-
-Only the owner can pause and unpause the payment function.
-
-```solidity
-function pause() external onlyOwner
-function unpause() external onlyOwner
-```
-
-### Withdrawing Funds
-
-Only the owner can withdraw stuck funds from the contract.
-
-```solidity
-function withdraw() external onlyOwner nonReentrant
-```
-
-## Event Listening
-
-Listen for `PaymentReceived` events to verify transactions server-side.
-
-## Security Features and Precautions
-
-The `PaymentManager` smart contract incorporates several security features to ensure the safety and integrity of the payment process. Below is a detailed explanation of the security measures implemented:
-
-### 1. Reentrancy Guard
-
-The contract uses OpenZeppelin's `ReentrancyGuard` to protect against reentrancy attacks. Reentrancy attacks occur when an external contract makes a recursive call back into the target contract before the initial function execution is complete, potentially exploiting the contract's state.
-
-**Implementation:**
-```solidity
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
-contract PaymentManager is ReentrancyGuard {
-    // Functions using the nonReentrant modifier
-    function pay(address _cryptocurrency, string memory uniqueIdentifier) external payable whenNotPaused nonReentrant {
-        // Function logic
-    }
-
-    function withdraw() external onlyOwner nonReentrant {
-        // Function logic
-    }
-}
-```
-
-### 2. Ownership Control
-
-The contract uses OpenZeppelin's `Ownable` to restrict access to sensitive functions to the contract owner. This ensures that only authorized personnel can perform critical operations such as changing the payment address or toggling accepted cryptocurrencies.
-
-**Implementation:**
-```solidity
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-contract PaymentManager is Ownable {
-    function changePaymentAddress(address _newAddress) external onlyOwner {
-        // Function logic
-    }
-
-    function toggleAcceptedCryptocurrency(address _cryptocurrency, bool _status) external onlyOwner {
-        // Function logic
-    }
-}
-```
-
-### 3. Pausable Contract
-
-The contract uses OpenZeppelin's `Pausable` to provide the ability to pause and unpause the payment function. This feature is useful in emergency situations, allowing the owner to temporarily halt payments to address any issues or vulnerabilities.
-
-**Implementation:**
-```solidity
-import "@openzeppelin/contracts/security/Pausable.sol";
-
-contract PaymentManager is Pausable {
-    function pause() external onlyOwner {
-        _pause();
-    }
-
-    function unpause() external onlyOwner {
-        _unpause();
-    }
-}
-```
-
-### 4. Checks-Effects-Interactions Pattern
-
-The `pay` function follows the checks-effects-interactions pattern to prevent reentrancy attacks. By emitting the event before making an external call, the contract ensures that state changes are made before interacting with external addresses.
-
-**Implementation:**
-```solidity
-function pay(address _cryptocurrency, string memory uniqueIdentifier) external payable whenNotPaused nonReentrant {
-    require(acceptedCryptocurrencies[_cryptocurrency], "Cryptocurrency not accepted");
-    require(msg.value > 0, "Payment must be greater than zero");
-
-    emit PaymentReceived(msg.sender, _cryptocurrency, msg.value, uniqueIdentifier);
-
-    (bool success, ) = paymentAddress.call{value: msg.value}("");
-    require(success, "Transfer failed");
-}
-```
-
-### 5. Withdrawal of Stuck Funds
-
-The contract includes a `withdraw` function that allows the owner to recover any funds that might get stuck in the contract. This function ensures that the contract's balance can be safely transferred to the owner if needed.
-
-**Implementation:**
-```solidity
-function withdraw() external onlyOwner nonReentrant {
-    uint256 balance = address(this).balance;
-    require(balance > 0, "No funds to withdraw");
-    (bool success, ) = owner().call{value: balance}("");
-    require(success, "Withdraw failed");
-}
-```
-
-By implementing these security features, the `PaymentManager` contract ensures a high level of protection against common vulnerabilities and attacks, providing a secure platform for managing cryptocurrency payments.
+Please make sure to update tests as appropriate and adhere to the existing coding style.
 
 ## License
 
-MIT License
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+For more information or support, please open an issue in the GitHub repository.

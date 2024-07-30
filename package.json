@@ -1,7 +1,7 @@
 {
-  "name": "payment-manager",
+  "name": "decentralized-pgp-key-server-contract",
   "version": "1.0.0",
-  "description": "A project to manage payments using Solidity and Hardhat",
+  "description": "A decentralized PGP key server contract with trust scoring and attestation mechanisms",
   "main": "index.js",
   "scripts": {
     "compile": "hardhat compile",
@@ -16,7 +16,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-verify": "^2.0.8",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
