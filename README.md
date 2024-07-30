@@ -204,7 +204,6 @@ Test suite contains 38 tests. Currently all of them functioning as expected. To 
 npm run test
 ```
 
-[Test details omitted for brevity]
 
 ## 9. Contributing
 
