@@ -1,4 +1,4 @@
-# Advanced PGP Key Server: Technical Documentation
+# Decentralized PGP Key Server Contract
 
 ## Table of Contents
 
