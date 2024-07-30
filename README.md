@@ -1,24 +1,31 @@
-# Advanced PGP Key Server
-
-A decentralized PGP key server with trust scoring and attestation mechanisms built on Ethereum.
+# Advanced PGP Key Server: Technical Documentation
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Deployment](#deployment)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Technical Details](#technical-details)
+   3.1 [Contract Inheritance](#contract-inheritance)
+   3.2 [Key Data Structures](#key-data-structures)
+   3.3 [Core Functionality](#core-functionality)
+   3.4 [Calculations and Algorithms](#calculations-and-algorithms)
+   3.5 [Security Measures](#security-measures)
+   3.6 [Gas Optimization](#gas-optimization)
+   3.7 [Events](#events)
+4. [Prerequisites](#prerequisites)
+5. [Installation](#installation)
+6. [Usage](#usage)
+7. [Deployment](#deployment)
+   7.1 [Deployed Contract](#deployed-contract)
+8. [Testing](#testing)
+9. [Contributing](#contributing)
+10. [License](#license)
 
-## Overview
+## 1. Overview
 
 The Advanced PGP Key Server is a smart contract-based solution for managing PGP keys on the Ethereum blockchain. It provides a decentralized platform for key registration, attestation, and trust scoring, enhancing the security and reliability of PGP key management.
 
-## Features
+## 2. Features
 
 - PGP key registration with staking mechanism
 - Key attestation system
@@ -28,7 +35,90 @@ The Advanced PGP Key Server is a smart contract-based solution for managing PGP 
 - Trust decay mechanism to encourage active participation
 - Admin functions for parameter adjustment
 
-## Prerequisites
+## 3. Technical Details
+
+### 3.1 Contract Inheritance
+The contract inherits from:
+- `ReentrancyGuard`: Prevents reentrancy attacks
+- `Ownable`: Provides basic access control
+- `Pausable`: Allows pausing contract functionality
+
+### 3.2 Key Data Structures
+
+#### PGPKey
+Stores information about a registered PGP key:
+- `publicKey`: The PGP public key string
+- `registrationTime`: Timestamp of key registration
+- `isRevoked`: Boolean flag for key revocation status
+- `stake`: Amount of ETH staked with the key
+- `attestations`: Mapping of attestor addresses to Attestation structs
+- `attestors`: Array of attestor addresses
+
+#### Attestation
+Represents an attestation made for a PGP key:
+- `timestamp`: When the attestation was made
+- `weight`: Importance of the attestation
+- `isRevoked`: Whether the attestation has been revoked
+
+#### TrustMetrics
+Holds various metrics used to calculate trust scores:
+- `totalWeight`: Sum of all attestation weights
+- `recentActivityScore`: Based on recent attestations
+- `longevityScore`: Based on account age
+- `diversityScore`: Based on unique attestors
+- `reputationScore`: Overall reputation score
+
+### 3.3 Core Functionality
+
+1. Key Registration
+2. Attestations
+3. Revocations
+4. Trust Scoring
+5. Stake Management
+6. Admin Functions
+
+### 3.4 Calculations and Algorithms
+
+#### Attestation Weight Calculation
+Formula: `weight = 50 - (attesterScore / 10)`
+
+#### Trust Metrics Calculation
+1. Total Weight
+2. Recent Activity Score
+3. Diversity Score
+4. Longevity Score
+5. Reputation Score
+
+#### Trust Score Calculation
+1. Raw Score Calculation
+2. Score Capping
+3. Trust Decay
+4. Final Score Assignment
+
+#### Key Algorithms
+1. Attestation Process
+2. Trust Score Update
+3. Revocation Handling
+4. Stake Management
+
+### 3.5 Security Measures
+- ReentrancyGuard for all state-changing functions
+- Pausable functionality for emergency stops
+- Access control for admin functions (Ownable)
+
+### 3.6 Gas Optimization
+- Limits the number of attestors processed in trust calculations (MAX_ATTESTORS_PER_UPDATE)
+- Unique Attestor Tracking
+- Selective Updates
+
+### 3.7 Events
+- Key registration
+- Attestations (made/revoked)
+- Key revocation
+- Trust score updates
+- Admin parameter changes
+
+## 4. Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 
@@ -38,7 +128,7 @@ Before you begin, ensure you have met the following requirements:
 - Infura account (for deploying to public networks)
 - Etherscan API key (for contract verification)
 
-## Installation
+## 5. Installation
 
 1. Clone the repository:
    ```
@@ -58,7 +148,7 @@ Before you begin, ensure you have met the following requirements:
    ETHERSCAN_API_KEY="your etherscan api key"
    ```
 
-## Usage
+## 6. Usage
 
 To interact with the contract, you can use Hardhat tasks or write your own scripts. Here are some example commands:
 
@@ -77,7 +167,7 @@ To interact with the contract, you can use Hardhat tasks or write your own scrip
   npm run deploy
   ```
 
-## Deployment
+## 7. Deployment
 
 The contract can be deployed to various Ethereum networks. Use the following commands for deployment:
 
@@ -98,7 +188,7 @@ The contract can be deployed to various Ethereum networks. Use the following com
 
 Note: Make sure you have sufficient ETH in your wallet to cover the deployment gas costs.
 
-### Deployed Contract
+### 7.1 Deployed Contract
 
 The contract has been deployed to the Holesky testnet at the following address:
 
@@ -106,74 +196,17 @@ The contract has been deployed to the Holesky testnet at the following address:
 0x431F968abe3Bf65b5Ac6998513A89E9D5c80CDD1
 ```
 
-## Testing
+## 8. Testing
 
-To run the test suite, execute:
+Test suite contains 38 tests. Currently all of them functioning as expected. To run the test suite, execute:
 
 ```
 npm run test
 ```
 
-Current tests:
-```
-  AdvancedPGPKeyServer
-    Deployment
-      ✔ Should set the right owner
-      ✔ Should initialize with correct default values
-    Key Registration
-      ✔ Should allow a user to register a key with sufficient stake
-    Key Registration
-      ✔ Should allow a user to register a key with sufficient stake
-      ✔ Should not allow a user to register a key with insufficient stake
-      ✔ Should not allow a user to register multiple keys
-    Key Attestation
-      ✔ Should allow a user to attest another user's key
-      ✔ Should not allow a user to attest their own key
-      ✔ Should not allow attestation of an unregistered key
-      ✔ Should not allow attestation within the cooldown period
-    Attestation Revocation
-      ✔ Should allow a user to revoke their attestation
-      ✔ Should not allow revocation of non-existent attestation
-      ✔ Should not allow revocation of already revoked attestation
-    Key Revocation
-      ✔ Should allow a user to revoke their own key
-      ✔ Should not allow revocation of an unregistered key
-    Stake Withdrawal
-      ✔ Should allow withdrawal of stake after key revocation
-      ✔ Should not allow withdrawal of stake without key revocation
-      ✔ Should not allow withdrawal of stake twice
-    Trust Score and Metrics
-      ✔ Should update trust score after attestation
-      ✔ Should decrease trust score after attestation revocation
-      ✔ Should return correct trust metrics
-    Admin Functions
-      ✔ Should allow owner to update minimum stake
-      ✔ Should not allow non-owner to update minimum stake
-      ✔ Should allow owner to update trust decay parameters
-      ✔ Should not allow setting trust decay percentage above 100
-      ✔ Should allow owner to withdraw funds
-      ✔ Should allow owner to pause and unpause the contract
-      ✔ Should not allow operations when paused
-    Potential Attack Scenarios
-      ✔ Should prevent Sybil attacks by requiring minimum stake
-      ✔ Should limit the impact of malicious attestations (51ms)
-      ✔ Should prevent attestation spamming
-      ✔ Should handle potential reentrancy attacks during stake withdrawal
-      ✔ Should prevent manipulation of trust decay parameters
-    Edge Cases
-      ✔ Should handle registration with exact minimum stake
-      ✔ Should handle registration with more than minimum stake
-      ✔ Should handle trust score calculation for a key with no attestations
-      ✔ Should handle trust score calculation after long periods of inactivity
-      ✔ Should handle the case when all attestations for a key are revoked
-  38 passing (2s)
+[Test details omitted for brevity]
 
-```
-
-This will run all the tests defined in the `test` directory, covering various scenarios and edge cases for the Advanced PGP Key Server contract.
-
-
-## Contributing
+## 9. Contributing
 
 Contributions to the Advanced PGP Key Server project are welcome. Please follow these steps to contribute:
 
@@ -186,7 +219,7 @@ Contributions to the Advanced PGP Key Server project are welcome. Please follow 
 
 Please make sure to update tests as appropriate and adhere to the existing coding style.
 
-## License
+## 10. License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
